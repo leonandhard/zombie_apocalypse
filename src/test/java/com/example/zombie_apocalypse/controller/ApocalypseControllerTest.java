@@ -36,12 +36,13 @@ class ApocalypseControllerTest {
     private WebApplicationContext wac;
 
     Logger logger = LoggerFactory.getLogger(ApocalypseControllerTest.class);
+
     @Test
     void infection() throws Exception {
         mock = MockMvcBuilders.webAppContextSetup(wac).build();
         World param = new World();
         param.setDimensions(10);
-        Zombie zombie = new Zombie(new Position(2,1));
+        Zombie zombie = new Zombie(new Position(2, 1));
         param.setZombie(zombie);
         List<Creature> creatures = new ArrayList<>();
         creatures.add(new Creature(new Position(3, 1)));
@@ -55,8 +56,6 @@ class ApocalypseControllerTest {
         creatures.add(new Creature(new Position(9, 9)));
         param.setCreatures(creatures);
         param.setCommands("RD");
-        System.out.println("param = " + param);
-        System.out.println("param = " + JSON.toJSONString(param));
         RequestBuilder request = MockMvcRequestBuilders.post("/zombie/infection")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JSON.toJSONString(param));
@@ -65,7 +64,6 @@ class ApocalypseControllerTest {
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn();
 //        logger.info(mvcResult.getResponse().getContentAsString());
-        Assertions.assertEquals("{\"success\":true,\"code\":200,\"msg\":\"success\",\"data\":{\"zombies\":[{\"x\":3,\"y\":2},{\"x\":4,\"y\":2},{\"x\":5,\"y\":2},{\"x\":6,\"y\":2},{\"x\":7,\"y\":2},{\"x\":8,\"y\":2},{\"x\":9,\"y\":2},{\"x\":0,\"y\":2},{\"x\":1,\"y\":2}],\"creatures\":[{\"x\":9,\"y\":9}]}}",
-                mvcResult.getResponse().getContentAsString());
+        Assertions.assertEquals("{\"success\":true,\"code\":200,\"msg\":\"success\",\"data\":{\"zombies\":[{\"position\":{\"x\":3,\"y\":2}},{\"position\":{\"x\":4,\"y\":2}},{\"position\":{\"x\":5,\"y\":2}},{\"position\":{\"x\":6,\"y\":2}},{\"position\":{\"x\":7,\"y\":2}},{\"position\":{\"x\":8,\"y\":2}},{\"position\":{\"x\":9,\"y\":2}},{\"position\":{\"x\":0,\"y\":2}},{\"position\":{\"x\":1,\"y\":2}}],\"creatures\":[{\"position\":{\"x\":9,\"y\":9}}]}}",mvcResult.getResponse().getContentAsString());
     }
 }

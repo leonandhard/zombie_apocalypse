@@ -40,10 +40,9 @@ class ApocalypseServiceImplTest {
         world.setCommands("RD");
         Result result = apocalypseService.infection(world);
         ZombiesAndCreatures data = (ZombiesAndCreatures) result.getData();
-        Assertions.assertEquals("[Position(x=3, y=2), Position(x=4, y=2), Position(x=5, y=2), Position(x=6, y=2), Position(x=7, y=2), Position(x=8, y=2), Position(x=9, y=2), Position(x=0, y=2), Position(x=1, y=2)]",
-                data.getZombies().toString());
+        Assertions.assertEquals("[Zombie(position=Position(x=3, y=2)), Zombie(position=Position(x=4, y=2)), Zombie(position=Position(x=5, y=2)), Zombie(position=Position(x=6, y=2)), Zombie(position=Position(x=7, y=2)), Zombie(position=Position(x=8, y=2)), Zombie(position=Position(x=9, y=2)), Zombie(position=Position(x=0, y=2)), Zombie(position=Position(x=1, y=2))]",data.getZombies().toString());
 
-        Assertions.assertEquals("[Position(x=9, y=9)]",
+        Assertions.assertEquals("[Creature(position=Position(x=9, y=9))]",
                 data.getCreatures().toString());
 
     }

@@ -18,6 +18,7 @@ public class ApocalypseController {
 
     @PostMapping("/infection")
     public Result infection(@RequestBody World world) {
+
         return apocalypseService.infection(world);
     }
 
