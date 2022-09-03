@@ -9,6 +9,7 @@ import com.example.zombie_apocalypse.model.Zombie;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
+import java.util.function.BiConsumer;
 
 @Slf4j
 public class InfectionSimulation {
@@ -16,21 +17,46 @@ public class InfectionSimulation {
     private final int[][] grid;
     private final String commands;
     private final List<Zombie> zombies;
-    private final Set<Creature> creaturesSet;
+    private final List<Creature> creatures;
+    static Map<Character, BiConsumer<Position, Integer>> actionMap = new HashMap<>();
+
+    static {
+        actionMap.put('R', (p, length) -> {
+            p.setX(p.getX() + 1 >= length ? 0 : p.getX() + 1);
+        });
+        actionMap.put('L', (p, length) -> {
+            p.setX(p.getX() - 1 < 0 ? length - 1 : p.getX() - 1);
+        });
+        actionMap.put('U', (p, length) -> {
+            p.setY(p.getY() - 1 < 0 ? length - 1 : p.getY() - 1);
+        });
+        actionMap.put('D', (p, length) -> {
+            p.setY(p.getY() + 1 >= length ? 0 : p.getY() + 1);
+        });
+    }
 
     public InfectionSimulation(World world) {
         this.zombiesQueue = new LinkedList<>();
         this.grid = initWorld(world, zombiesQueue);
         this.zombies = new ArrayList<>();
         this.commands = world.getCommands();
-        List<Creature> creatures = world.getCreatures();
-        this.creaturesSet = new HashSet<>(creatures);
+        this.creatures = world.getCreatures();
     }
 
     public Result infection() {
         zombieStartMove();
-        ZombiesAndCreatures zombiesAndCreatures = new ZombiesAndCreatures(zombies, new ArrayList<>(creaturesSet));
+        ZombiesAndCreatures zombiesAndCreatures = new ZombiesAndCreatures(zombies, checkCreatures());
         return Result.success(zombiesAndCreatures);
+    }
+
+    private List<Creature> checkCreatures() {
+        List<Creature> results = new ArrayList<>();
+        for (Creature creature : creatures) {
+            if (grid[creature.getPosition().getX()][creature.getPosition().getY()] == 1) {
+                results.add(creature);
+            }
+        }
+        return results;
     }
 
     private void zombieStartMove() {
@@ -41,10 +67,10 @@ public class InfectionSimulation {
                 char command = commands.charAt(i);
                 zombieMove(zombie, command, grid.length);
                 log.info("Zombie {} moved to ({}, {}).", zombieNumber, zombie.getPosition().getX(), zombie.getPosition().getY());
-                if (grid[zombie.getPosition().getX()][zombie.getPosition().getY()] == 1) {
-                    grid[zombie.getPosition().getX()][zombie.getPosition().getY()] = 0;
-                    zombiesQueue.offer(new Zombie(zombie.getPosition()));
-                    creaturesSet.remove(zombie);
+                if (grid[zombie.getPosition().getY()][zombie.getPosition().getX()] == 1) {
+                    grid[zombie.getPosition().getY()][zombie.getPosition().getX()] = 0;
+                    zombiesQueue.offer(new Zombie(new Position(zombie.getPosition().getX(), zombie.getPosition().getY())));
+                    Position position = new Position(zombie.getPosition().getX(), zombie.getPosition().getY());
                     log.info("Zombie {} infected creature at ({}, {}).", zombieNumber, zombie.getPosition().getX(), zombie.getPosition().getY());
                 }
             }
@@ -55,21 +81,8 @@ public class InfectionSimulation {
     }
 
     private void zombieMove(Zombie zombie, char command, int length) {
-        Character[] commandStep = new Character[]{'R', 'U', 'D', 'L'};
-        Position[] actionStep = new Position[]{new Position(1, 0),
-                new Position(0, -1), new Position(0, 1), new Position(1, 0)};
-        Map<Character, Position> map = new HashMap<>();
-        for (int i = 0; i < commandStep.length; i++) {
-            map.put(commandStep[i], actionStep[i]);
-        }
-        Position position = new Position();
-        int indexX = zombie.getPosition().getX() + map.get(command).getX();
-        int indexY = zombie.getPosition().getY() + map.get(command).getY();
-        indexX = indexX >= length ? 0 : indexX;
-        indexY = indexY >= length ? 0 : indexY;
-        position.setX(indexX);
-        position.setY(indexY);
-        zombie.setPosition(position);
+        BiConsumer<Position, Integer> positionIntegerBiConsumer = actionMap.get(command);
+        positionIntegerBiConsumer.accept(zombie.getPosition(), length);
     }
 
     private int[][] initWorld(World world, Queue<Zombie> zombiesQueue) {
@@ -79,7 +92,7 @@ public class InfectionSimulation {
         zombiesQueue.offer(zombie);
         List<Creature> creatures = world.getCreatures();
         for (Creature creature : creatures) {
-            grid[creature.getPosition().getX()][creature.getPosition().getY()] = 1;
+            grid[creature.getPosition().getY()][creature.getPosition().getX()] = 1;
         }
         return grid;
     }
