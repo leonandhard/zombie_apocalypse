@@ -8,9 +8,9 @@ import java.util.List;
 public class World {
     private Integer dimensions;
 
-    private Position zombie;
+    private Zombie zombie;
 
-    private List<Position> creatures;
+    private List<Creature> creatures;
 
     private String commands;
 }

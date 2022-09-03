@@ -1,6 +1,7 @@
 package com.example.zombie_apocalypse.dto;
 
-import com.example.zombie_apocalypse.model.Position;
+import com.example.zombie_apocalypse.model.Creature;
+import com.example.zombie_apocalypse.model.Zombie;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -9,7 +10,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class ZombiesAndCreatures {
-    private List<Position> zombies;
+    private List<Zombie> zombies;
 
-    private List<Position> creatures;
+    private List<Creature> creatures;
 }
