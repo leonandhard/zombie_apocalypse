@@ -6,19 +6,22 @@ import com.example.zombie_apocalypse.dto.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
+
 @RestController
 @RequestMapping("/zombie")
 public class ApocalypseController {
 
     private final ApocalypseService apocalypseService;
+
     @Autowired
     public ApocalypseController(ApocalypseService apocalypseService) {
         this.apocalypseService = apocalypseService;
     }
 
     @PostMapping("/infection")
-    public Result infection(@RequestBody World world) {
-
+    public Result infection(@Valid @RequestBody World world) {
         return apocalypseService.infection(world);
     }
 

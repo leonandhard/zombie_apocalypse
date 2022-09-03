@@ -1,5 +1,8 @@
 package com.example.zombie_apocalypse.service;
 
+import com.example.zombie_apocalypse.exception.CommandNotFoundException;
+import com.example.zombie_apocalypse.exception.InputDimensionsUnexpectedException;
+import com.example.zombie_apocalypse.exception.ZombieNotFoundException;
 import com.example.zombie_apocalypse.model.Creature;
 import com.example.zombie_apocalypse.model.Position;
 import com.example.zombie_apocalypse.model.World;
@@ -115,7 +118,20 @@ public class ApocalypseService {
 
     private int[][] initWorld(World world, Queue<Zombie> zombiesQueue) {
         // 0 means no creatures, 1 means one creature stand there
+        if (world.getDimensions() <= 0) {
+            throw new InputDimensionsUnexpectedException(world.getDimensions());
+        }
+
         int[][] grid = new int[world.getDimensions()][world.getDimensions()];
+
+        if (world.getZombie() == null) {
+            throw new ZombieNotFoundException();
+        }
+        if (!world.getCommands().matches("[RULD]+")) {
+            throw new CommandNotFoundException(commands);
+        }
+
+
         Zombie zombie = world.getZombie();
         zombiesQueue.offer(zombie);
         List<Creature> creatures = world.getCreatures();
