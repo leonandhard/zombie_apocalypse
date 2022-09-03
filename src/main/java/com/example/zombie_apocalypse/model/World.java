@@ -1,5 +1,6 @@
 package com.example.zombie_apocalypse.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.List;
@@ -8,9 +9,9 @@ import java.util.List;
 public class World {
     private Integer dimensions;
 
-    private Position zombie;
+    private Zombie zombie;
 
-    private List<Position> creatures;
+    private List<Creature> creatures;
 
     private String commands;
 }

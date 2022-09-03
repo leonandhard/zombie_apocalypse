@@ -13,6 +13,7 @@ import java.util.*;
 @Slf4j
 public class ApocalypseService {
     public Result infection(World world) {
+        System.out.println("world = " + world);
         return new InfectionSimulation(world).infection();
     }
 

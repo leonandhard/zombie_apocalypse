@@ -1,8 +1,10 @@
 package com.example.zombie_apocalypse.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.example.zombie_apocalypse.model.Creature;
 import com.example.zombie_apocalypse.model.Position;
 import com.example.zombie_apocalypse.model.World;
+import com.example.zombie_apocalypse.model.Zombie;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -39,20 +41,22 @@ class ApocalypseControllerTest {
         mock = MockMvcBuilders.webAppContextSetup(wac).build();
         World param = new World();
         param.setDimensions(10);
-        Position zombie = new Position(2, 1);
+        Zombie zombie = new Zombie(new Position(2,1));
         param.setZombie(zombie);
-        List<Position> creatures = new ArrayList<>();
-        creatures.add(new Position(3, 1));
-        creatures.add(new Position(4, 1));
-        creatures.add(new Position(5, 1));
-        creatures.add(new Position(6, 1));
-        creatures.add(new Position(7, 1));
-        creatures.add(new Position(8, 1));
-        creatures.add(new Position(9, 1));
-        creatures.add(new Position(0, 1));
-        creatures.add(new Position(9, 9));
+        List<Creature> creatures = new ArrayList<>();
+        creatures.add(new Creature(new Position(3, 1)));
+        creatures.add(new Creature(new Position(4, 1)));
+        creatures.add(new Creature(new Position(5, 1)));
+        creatures.add(new Creature(new Position(6, 1)));
+        creatures.add(new Creature(new Position(7, 1)));
+        creatures.add(new Creature(new Position(8, 1)));
+        creatures.add(new Creature(new Position(9, 1)));
+        creatures.add(new Creature(new Position(0, 1)));
+        creatures.add(new Creature(new Position(9, 9)));
         param.setCreatures(creatures);
         param.setCommands("RD");
+        System.out.println("param = " + param);
+        System.out.println("param = " + JSON.toJSONString(param));
         RequestBuilder request = MockMvcRequestBuilders.post("/zombie/infection")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JSON.toJSONString(param));
