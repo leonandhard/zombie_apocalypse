@@ -23,7 +23,6 @@ public class ApocalypseService {
 
     public InfectionResponse infection(InitialInfo world) {
         Queue<Zombie> zombiesQueue = new LinkedList<>();
-//        var grid = initWorld(world, zombiesQueue);
         Integer gridSize = world.getDimensions();
         List<Zombie> zombies = new ArrayList<>();
         String commands = world.getCommands();
@@ -40,16 +39,16 @@ public class ApocalypseService {
                 Position actionPosition = moveZombie.getPosition();
                 Position offset = commandMap.get(command);
                 moveZombie.setPosition(actionPosition.move(gridSize, offset));
-                log.info("Zombie {} moved to ({}, {}).", zombieNumber,
-                        moveZombie.getPosition().getX(), moveZombie.getPosition().getY());
+                log.info("Zombie {} moved to ({}).", zombieNumber,
+                        moveZombie.getPosition());
                 Creature creature = zombieInfectCreature(moveZombie, creaturesSet);
                 if (creature != null) {
                     zombiesQueue.offer(new Zombie(
                             moveZombie.getPosition()
                     ));
                     creaturesSet.remove(creature);
-                    log.info("Zombie {} infected creature at ({}, {}).",
-                            zombieNumber, moveZombie.getPosition().getX(), moveZombie.getPosition().getY());
+                    log.info("Zombie {} infected creature at ({}).",
+                            zombieNumber, moveZombie.getPosition());
                 }
             }
 
