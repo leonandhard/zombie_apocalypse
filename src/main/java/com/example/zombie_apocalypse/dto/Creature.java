@@ -1,15 +1,18 @@
-package com.example.zombie_apocalypse.model;
+package com.example.zombie_apocalypse.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.Valid;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Zombie {
+public class Creature {
+    @Valid
+    @NonNull
     private Position position;
 
 }

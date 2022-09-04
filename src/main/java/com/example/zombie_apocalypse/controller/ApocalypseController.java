@@ -1,8 +1,9 @@
 package com.example.zombie_apocalypse.controller;
 
-import com.example.zombie_apocalypse.dto.World;
+import com.example.zombie_apocalypse.dto.InitialInfo;
+import com.example.zombie_apocalypse.exception.ZombieNotFoundException;
 import com.example.zombie_apocalypse.service.ApocalypseService;
-import com.example.zombie_apocalypse.dto.infectionResponse;
+import com.example.zombie_apocalypse.dto.InfectionResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +22,11 @@ public class ApocalypseController {
     }
 
     @PostMapping("/infection")
-    public infectionResponse infection(@Valid @RequestBody World world) {
+    public InfectionResponse infection(@Valid @RequestBody InitialInfo world) {
+        if (world.getZombie().getPosition()==null){
+            throw new ZombieNotFoundException();
+        }
+        System.out.println("world = " + world);
         return apocalypseService.infection(world);
     }
 

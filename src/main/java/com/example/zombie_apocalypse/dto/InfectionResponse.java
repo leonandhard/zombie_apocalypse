@@ -7,14 +7,14 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class infectionResponse {
+public class InfectionResponse {
     private boolean success;
     private int code;
     private String msg;
     private Object data;
 
-    public  infectionResponse success(Object data){
-        return new infectionResponse(true,200,"success",data);
+    public InfectionResponse success(Object data){
+        return new InfectionResponse(true,200,"success",data);
     }
 
 //    public static Result fail(int code, String msg){

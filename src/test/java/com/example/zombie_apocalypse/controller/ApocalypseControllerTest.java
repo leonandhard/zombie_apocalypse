@@ -1,10 +1,10 @@
 package com.example.zombie_apocalypse.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.example.zombie_apocalypse.model.Creature;
-import com.example.zombie_apocalypse.model.Position;
-import com.example.zombie_apocalypse.dto.World;
-import com.example.zombie_apocalypse.model.Zombie;
+import com.example.zombie_apocalypse.dto.Creature;
+import com.example.zombie_apocalypse.dto.Position;
+import com.example.zombie_apocalypse.dto.InitialInfo;
+import com.example.zombie_apocalypse.dto.Zombie;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -40,7 +40,7 @@ class ApocalypseControllerTest {
     @Test
     void infection() throws Exception {
         mock = MockMvcBuilders.webAppContextSetup(wac).build();
-        World param = new World();
+        InitialInfo param = new InitialInfo();
         param.setDimensions(10);
         Zombie zombie = new Zombie(new Position(2, 1));
         param.setZombie(zombie);

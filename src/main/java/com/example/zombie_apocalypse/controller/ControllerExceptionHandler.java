@@ -4,26 +4,26 @@ import com.example.zombie_apocalypse.exception.CommandNotFoundException;
 import com.example.zombie_apocalypse.dto.ErrorDto;
 import com.example.zombie_apocalypse.exception.InputDimensionsUnexpectedException;
 import com.example.zombie_apocalypse.exception.ZombieNotFoundException;
+import com.fasterxml.jackson.databind.exc.InvalidDefinitionException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.validation.UnexpectedTypeException;
 import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
 @RestControllerAdvice
 public class ControllerExceptionHandler {
-
-    @ExceptionHandler(value = {InputDimensionsUnexpectedException.class})
-    public ResponseEntity<ErrorDto> handleInputDimensionsUnexpectedException(InputDimensionsUnexpectedException e) {
-        log.info(e.getMessage());
-
+    @ExceptionHandler(value = {MethodArgumentNotValidException.class})
+    public ResponseEntity<ErrorDto> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         List<String> details = new ArrayList<>();
-        details.add(e.getLocalizedMessage());
-        ErrorDto error = new ErrorDto("Expected valid dimension", details);
+        details.add(e.getFieldError().getDefaultMessage());
+        ErrorDto error = new ErrorDto("error", details);
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 
@@ -39,14 +39,6 @@ public class ControllerExceptionHandler {
     }
 
 
-    @ExceptionHandler(value = {CommandNotFoundException.class})
-    public ResponseEntity<ErrorDto> handleCommandNotFoundException(CommandNotFoundException e) {
-        log.info("Wrong commands");
 
-        List<String> details = new ArrayList<>();
-        details.add(e.getLocalizedMessage());
-        ErrorDto error = new ErrorDto("Commands not found", details);
-        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
-    }
 
 }
