@@ -23,10 +23,9 @@ public class ApocalypseController {
 
     @PostMapping("/infection")
     public InfectionResponse infection(@Valid @RequestBody InitialInfo world) {
-        if (world.getZombie().getPosition()==null){
+        if (world.getZombie().getPosition() == null) {
             throw new ZombieNotFoundException();
         }
-        System.out.println("world = " + world);
         return apocalypseService.infection(world);
     }
 
