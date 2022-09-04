@@ -2,8 +2,8 @@ package com.example.zombie_apocalypse.service;
 
 import com.example.zombie_apocalypse.model.Creature;
 import com.example.zombie_apocalypse.model.Position;
-import com.example.zombie_apocalypse.model.World;
-import com.example.zombie_apocalypse.dto.Result;
+import com.example.zombie_apocalypse.dto.World;
+import com.example.zombie_apocalypse.dto.infectionResponse;
 import com.example.zombie_apocalypse.dto.ZombiesAndCreatures;
 import com.example.zombie_apocalypse.model.Zombie;
 import org.junit.jupiter.api.Assertions;
@@ -38,7 +38,7 @@ class ApocalypseServiceImplTest {
         creatures.add(new Creature(new Position(9, 9)));
         world.setCreatures(creatures);
         world.setCommands("RD");
-        Result result = apocalypseService.infection(world);
+        infectionResponse result = apocalypseService.infection(world);
         ZombiesAndCreatures data = (ZombiesAndCreatures) result.getData();
         Assertions.assertEquals("[Zombie(position=Position(x=3, y=2)), Zombie(position=Position(x=4, y=2)), Zombie(position=Position(x=5, y=2)), Zombie(position=Position(x=6, y=2)), Zombie(position=Position(x=7, y=2)), Zombie(position=Position(x=8, y=2)), Zombie(position=Position(x=9, y=2)), Zombie(position=Position(x=0, y=2)), Zombie(position=Position(x=1, y=2))]",data.getZombies().toString());
 

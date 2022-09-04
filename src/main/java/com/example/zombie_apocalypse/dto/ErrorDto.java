@@ -1,4 +1,4 @@
-package com.example.zombie_apocalypse.exception;
+package com.example.zombie_apocalypse.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

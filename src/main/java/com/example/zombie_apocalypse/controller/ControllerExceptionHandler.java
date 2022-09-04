@@ -1,7 +1,7 @@
 package com.example.zombie_apocalypse.controller;
 
 import com.example.zombie_apocalypse.exception.CommandNotFoundException;
-import com.example.zombie_apocalypse.exception.ErrorDto;
+import com.example.zombie_apocalypse.dto.ErrorDto;
 import com.example.zombie_apocalypse.exception.InputDimensionsUnexpectedException;
 import com.example.zombie_apocalypse.exception.ZombieNotFoundException;
 import lombok.extern.slf4j.Slf4j;

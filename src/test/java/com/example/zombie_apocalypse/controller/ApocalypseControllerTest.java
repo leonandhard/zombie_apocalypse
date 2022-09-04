@@ -3,7 +3,7 @@ package com.example.zombie_apocalypse.controller;
 import com.alibaba.fastjson.JSON;
 import com.example.zombie_apocalypse.model.Creature;
 import com.example.zombie_apocalypse.model.Position;
-import com.example.zombie_apocalypse.model.World;
+import com.example.zombie_apocalypse.dto.World;
 import com.example.zombie_apocalypse.model.Zombie;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

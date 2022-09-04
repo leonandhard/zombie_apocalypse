@@ -1,8 +1,8 @@
 package com.example.zombie_apocalypse.controller;
 
-import com.example.zombie_apocalypse.model.World;
+import com.example.zombie_apocalypse.dto.World;
 import com.example.zombie_apocalypse.service.ApocalypseService;
-import com.example.zombie_apocalypse.dto.Result;
+import com.example.zombie_apocalypse.dto.infectionResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +21,7 @@ public class ApocalypseController {
     }
 
     @PostMapping("/infection")
-    public Result infection(@Valid @RequestBody World world) {
+    public infectionResponse infection(@Valid @RequestBody World world) {
         return apocalypseService.infection(world);
     }
 
