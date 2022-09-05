@@ -1,40 +1,34 @@
 package com.example.zombie_apocalypse.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.Objects;
 
-
 @AllArgsConstructor
+@Getter
 public final class Position {
-    @NotNull
-    private Integer x;
-    @NotNull
-    private Integer y;
-    public Position move(Integer gridSize, Position offset) {
-        int indexX = getX() + offset.getX();
-        int indexY = getY() + offset.getY();
-        indexX = indexX >= gridSize ? 0 : indexX;
-        indexY = indexY >= gridSize ? 0 : indexY;
-        return new Position(indexX, indexY);
+
+    private int x;
+    private int y;
+
+    public Position move(Position offset, int gridSize) {
+        return new Position(correct(x + offset.x, gridSize),
+                correct(y + offset.y, gridSize));
     }
 
-    public Integer getX() {
-        return x;
+    private int correct(int position, int gridSize) {
+        return position >= gridSize ? 0 : position;
     }
-
-    public Integer getY() {
-        return y;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+
         Position position = (Position) o;
-        return Objects.equals(x, position.x) && Objects.equals(y, position.y);
+
+        if (x != position.x) return false;
+        return y == position.y;
     }
 
     @Override
