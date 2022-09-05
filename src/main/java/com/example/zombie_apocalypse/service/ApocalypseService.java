@@ -1,20 +1,28 @@
 package com.example.zombie_apocalypse.service;
 
 import com.example.zombie_apocalypse.dto.Creature;
-import com.example.zombie_apocalypse.dto.Position;
-import com.example.zombie_apocalypse.dto.InitialInfo;
 import com.example.zombie_apocalypse.dto.InfectionResponse;
-import com.example.zombie_apocalypse.dto.ZombiesAndCreatures;
+import com.example.zombie_apocalypse.dto.InitialInfo;
+import com.example.zombie_apocalypse.dto.Position;
 import com.example.zombie_apocalypse.dto.Zombie;
+import com.example.zombie_apocalypse.dto.ZombiesAndCreatures;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Queue;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 public class ApocalypseService {
-    private final Map<Character, Position> commandMap = Map.of(
+    private final static Map<Character, Position> commandOffsetMap = Map.of(
             'R', new Position(1, 0),
             'L', new Position(-1, 0),
             'U', new Position(0, -1),
@@ -22,50 +30,50 @@ public class ApocalypseService {
     );
 
     public InfectionResponse infection(InitialInfo world) {
-        Queue<Zombie> zombiesQueue = new LinkedList<>();
-        Integer gridSize = world.getDimensions();
-        List<Zombie> zombies = new ArrayList<>();
-        String commands = world.getCommands();
-        List<Creature> creatures = world.getCreatures();
-        Set<Creature> creaturesSet = new HashSet<>(creatures);
-        Zombie zombie = world.getZombie();
-        zombiesQueue.offer(zombie);
 
-        int zombieNumber = 0;
+        List<Zombie> allZombies = new ArrayList<>();
+        Map<Position, Creature> creatureMap = world.getCreatures().stream()
+                .collect(Collectors.toMap(Creature::getPosition, Function.identity()));
+
+        int gridSize = world.getDimensions();
+        String commands = world.getCommands();
+
+        Queue<Zombie> zombiesQueue = new LinkedList<>();
+        zombiesQueue.offer(world.getZombie());
+
         while (!zombiesQueue.isEmpty()) {
-            Zombie moveZombie = zombiesQueue.poll();
+            Zombie movingZombie = zombiesQueue.poll();
+
             for (int i = 0; i < commands.length(); i++) {
                 char command = commands.charAt(i);
-                Position actionPosition = moveZombie.getPosition();
-                Position offset = commandMap.get(command);
-                moveZombie.setPosition(actionPosition.move(gridSize, offset));
-                log.info("Zombie {} moved to ({}).", zombieNumber,
-                        moveZombie.getPosition());
-                Creature creature = zombieInfectCreature(moveZombie, creaturesSet);
-                if (creature != null) {
-                    zombiesQueue.offer(new Zombie(
-                            moveZombie.getPosition()
-                    ));
-                    creaturesSet.remove(creature);
-                    log.info("Zombie {} infected creature at ({}).",
-                            zombieNumber, moveZombie.getPosition());
-                }
+
+                movingZombie.move(commandOffsetMap.get(command), gridSize);
+                log.info("Zombie {} moved to ({}).", allZombies.size(), movingZombie.getPosition());
+
+                infectCreature(movingZombie, creatureMap).ifPresent(creature -> {
+                    zombiesQueue.offer(new Zombie(creature.getPosition()));
+                    creatureMap.remove(creature.getPosition());
+                    log.info("Zombie {} infected creature at ({}).", allZombies.size(), movingZombie.getPosition());
+                });
             }
 
-            zombieNumber++;
-            zombies.add(moveZombie);
+            allZombies.add(movingZombie);
         }
+
         log.info("=============================");
-        ZombiesAndCreatures zombiesAndCreatures = new ZombiesAndCreatures(zombies, new ArrayList<>(creaturesSet));
-        return new InfectionResponse().success(zombiesAndCreatures);
+        ZombiesAndCreatures zombiesAndCreatures = ZombiesAndCreatures.builder().zombies(allZombies).creatures(new ArrayList<>(creatureMap.values())).build();
+        return InfectionResponse.builder().success(true).code(200).msg("success").data(zombiesAndCreatures)
+                .build();
     }
 
-    private Creature zombieInfectCreature(Zombie zombie, Set<Creature> creaturesSet) {
-        for (Creature creature :
-                creaturesSet) {
-            if (creature.getPosition().equals(zombie.getPosition())) return creature;
-        }
-        return null;
+    private Optional<Creature> infectCreature(Zombie movingZombie, Map<Position, Creature> creatureMap) {
+       return Optional.ofNullable(creatureMap.get(movingZombie.getPosition()));
+    }
+
+    private Optional<Creature> zombieInfectCreature(Zombie zombie, Set<Creature> creaturesSet) {
+        return creaturesSet.stream()
+                .filter(c -> c.getPosition().equals(zombie.getPosition()))
+                .findFirst();
     }
 
 }
